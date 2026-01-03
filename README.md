@@ -2,6 +2,8 @@
 
 **Strict Pomodoro** is a free, web-based timer designed to help you focus on study sessions and track earned rest time. It’s simple, no-login required, and fully customizable.
 
+**Link:** https://dionsrm.github.io/strict-pomodoro/
+
 ![Strict Pomodoro Screenshot](Sample.png)  
 
 ---
