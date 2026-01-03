@@ -1,4 +1,236 @@
-<!doctypehtml><html lang="en"><meta charset="UTF-8"><meta content="width=device-width,initial-scale=1"name="viewport"><link href="Strict Pomo Icon.png"rel="icon"type="image/png"><title>Strict Pomodoro</title><style>:root{--bg:#0f1220;--panel:#171a2e;--text:#eaeaf0;--muted:#9aa0b4;--accent:#6c7cff;--danger:#ff6b6b}*{box-sizing:border-box;font-family:system-ui}header{position:fixed;top:0;left:0;width:100%;z-index:1000;background:var(--bg);padding:2px 30px;box-shadow:0 2px 10px rgba(0,0,0,.3)}.app{padding-top:100px}.brand{display:flex;align-items:center;gap:10px}.brand img{height:50px;width:auto}body{margin:0;background:var(--bg);color:var(--text);display:flex;justify-content:center;padding:24px}.app{max-width:900px;width:100%}.card{background:var(--panel);border-radius:16px;padding:20px;margin-bottom:16px}header{display:flex;justify-content:space-between;align-items:center}nav a{color:var(--muted);margin-left:12px;text-decoration:none;font-size:14px}.timer{text-align:center;padding:32px}.state{font-size:14px;color:var(--muted)}.time{font-size:72px;font-weight:700;margin:12px 0}.controls button{background:var(--accent);border:none;color:#fff;padding:12px 18px;border-radius:10px;font-size:16px;margin:0 6px;cursor:pointer}.controls .danger{background:var(--danger)}.controls .secondary{background:#2a2f55}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}input,select{width:100%;padding:10px;border-radius:8px;border:none;background:#10132a;color:var(--text)}footer{text-align:center;font-size:12px;color:var(--muted)}.bmc{display:inline-block;margin-top:12px}.donations{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:12px}.donations img{height:32px;width:auto;display:block}.shortcuts ul{list-style:none;padding:0;margin:0}.shortcuts li{display:flex;align-items:center;gap:12px;margin-bottom:10px;color:var(--muted);font-size:14px}.shortcuts kbd{background:#10132a;border-radius:6px;padding:4px 8px;font-size:12px;font-weight:600;color:var(--text);min-width:64px;text-align:center}</style><div class="app"><header><h2 class="brand"><img alt="Strict Pomodoro logo"src="Strict Pomo Logo T.png"> <span>Strict Pomodoro</span></h2><nav><a href="#instructions">How to Use</a></nav></header><section class="card timer"id="timer"><div class="state"id="state">IDLE</div><div class="time"id="time">00:00</div><p style="color:var(--muted)">Rest Bank: <strong id="restBank">0</strong> min<div class="controls"><button id="start">Start</button> <button id="stop"class="secondary">Stop</button> <button id="reset"class="danger">Reset</button></div><div style="margin-top:16px">Mode: <select id="mode"><option value="study">Study (Count Up)<option value="rest">Rest (Count Down)</select></div></section><section class="card"id="rules"><h3>Custom Rules</h3><div class="grid"><div><label>Study Minutes (X)</label> <input id="studyMin"min="1"type="number"value="25"></div><div><label>Rest Minutes Earned (Y)</label> <input id="restMin"min="1"type="number"value="5"></div><div><label>Strict Mode <span style="cursor:help;color:var(--muted)"title="Stopping study early wipes unfinished progress.">ⓘ</span></label> <select id="strict"><option value="on">On<option value="off">Off</select></div></div></section><section class="card"id="instructions"><h3>How to Use</h3><ol style="color:var(--muted)"><li>Set your rules:<ul><li><strong>X</strong> = study minutes<li><strong>Y</strong> = rest minutes earned</ul><li>Select <strong>Study</strong> mode and press <strong>Start</strong>.<li>The timer counts <strong>up</strong>. Every X minutes studied earns Y minutes of rest.<li>You may study continuously. Rest keeps accumulating.<li>Switch to <strong>Rest</strong> mode to use your rest bank.<li>In <strong>Strict Mode</strong>, stopping study early earns nothing.</ol><p style="color:var(--muted);font-style:italic">This timer rewards consistency, not shortcuts.</section><section class="card shortcuts"><h3>Keyboard Shortcuts</h3><ul><li><kbd>S</kbd> — Switch to Study mode<li><kbd>R</kbd> — Switch to Rest mode<li><kbd>B</kbd> — Reset timer<li><kbd>Space</kbd> — Start / Stop timer</ul></section><section class="card"id="terms"><h3>Terms of Use</h3><p style="color:var(--muted)">This application is provided on an “as is” basis, without warranties of any kind. The creator makes no guarantees regarding productivity, focus, or results obtained through use of this tool. By using this site, you agree that the creator shall not be held liable for any loss, missed deadlines, or consequences arising from its use.</section><section class="card"id="privacy"><h3>Privacy Policy</h3><p style="color:var(--muted)">This site does not collect, store, or transmit personal data. All settings and timer data are stored locally in your browser using localStorage. No cookies, analytics, trackers, or third-party scripts are used.</section><footer><br>Built for focus. No accounts. No tracking.<br><br>If it helps you, a small tip goes a long way.<br><br><div class="donations"><a href="https://www.buymeacoffee.com/dionsrm"style="display:inline-block"target="_blank"><img alt="Buy Me A Coffee"src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"style="height:40px"></a></div><br><p style="font-size:11px">© 2026 Strict Pomodoro. All rights reserved.<p style="font-size:11px">v1.0</footer></div><script>let timer=null,running=false;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" type="image/png" href="Strict Pomo Icon.png">
+<title>Strict Pomodoro</title>
+
+<style>
+:root{
+  --bg:#0f1220;--panel:#171a2e;--text:#eaeaf0;
+  --muted:#9aa0b4;--accent:#6c7cff;--danger:#ff6b6b;
+}
+*{box-sizing:border-box;font-family:system-ui}
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: var(--bg); /* make sure the background covers content underneath */
+  padding: 2px 30px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3); /* optional, makes it pop */
+}
+.app {
+  padding-top: 100px; /* adjust to match your header height */
+}
+
+.brand{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand img{
+  height: 50px;     /* controls logo size */
+  width: auto;
+}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  display:flex;justify-content:center;padding:24px
+}
+.app{max-width:900px;width:100%}
+.card{
+  background:var(--panel);border-radius:16px;
+  padding:20px;margin-bottom:16px
+}
+header{display:flex;justify-content:space-between;align-items:center}
+nav a{color:var(--muted);margin-left:12px;text-decoration:none;font-size:14px}
+.timer{text-align:center;padding:32px}
+.state{font-size:14px;color:var(--muted)}
+.time{font-size:72px;font-weight:700;margin:12px 0}
+.controls button{
+  background:var(--accent);border:none;color:#fff;
+  padding:12px 18px;border-radius:10px;
+  font-size:16px;margin:0 6px;cursor:pointer
+}
+.controls .danger{background:var(--danger)}
+.controls .secondary{background:#2a2f55}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+input,select{
+  width:100%;padding:10px;border-radius:8px;border:none;
+  background:#10132a;color:var(--text)
+}
+footer{text-align:center;font-size:12px;color:var(--muted)}
+.bmc{
+  display:inline-block;margin-top:12px;
+}
+.donations{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.donations img{
+  height: 32px;        /* 👈 controls size */
+  width: auto;
+  display: block;
+}
+
+.shortcuts ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.shortcuts li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.shortcuts kbd {
+  background: #10132a;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  min-width: 64px;
+  text-align: center;
+}
+
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header>
+  <h2 class="brand">
+  <img src="Strict Pomo Logo T.png" alt="Strict Pomodoro logo">
+  <span>Strict Pomodoro</span>
+</h2>
+  <nav>
+    <a href="#instructions">How to Use</a>
+  </nav>
+</header>
+
+<section id="timer" class="card timer">
+  <div class="state" id="state">IDLE</div>
+  <div class="time" id="time">00:00</div>
+
+  <p style="color:var(--muted)">
+    Rest Bank: <strong id="restBank">0</strong> min
+  </p>
+
+  <div class="controls">
+    <button id="start">Start</button>
+    <button id="stop" class="secondary">Stop</button>
+    <button id="reset" class="danger">Reset</button>
+  </div>
+
+  <div style="margin-top:16px">
+    Mode:
+    <select id="mode">
+      <option value="study">Study (Count Up)</option>
+      <option value="rest">Rest (Count Down)</option>
+    </select>
+  </div>
+</section>
+
+<section id="rules" class="card">
+<h3>Custom Rules</h3>
+<div class="grid">
+  <div>
+    <label>Study Minutes (X)</label>
+    <input type="number" id="studyMin" value="25" min="1">
+  </div>
+  <div>
+    <label>Rest Minutes Earned (Y)</label>
+    <input type="number" id="restMin" value="5" min="1">
+  </div>
+  <div>
+    <label>
+  Strict Mode
+  <span title="Stopping study early wipes unfinished progress."
+        style="cursor:help;color:var(--muted)">ⓘ</span>
+</label>
+    <select id="strict">
+      <option value="on">On</option>
+      <option value="off">Off</option>
+    </select>
+  </div>
+</div>
+</section>
+
+<section id="instructions" class="card">
+<h3>How to Use</h3>
+<ol style="color:var(--muted)">
+  <li>Set your rules:
+      <ul>
+        <li><strong>X</strong> = study minutes</li>
+        <li><strong>Y</strong> = rest minutes earned</li>
+      </ul>
+    </li>
+    <li>Select <strong>Study</strong> mode and press <strong>Start</strong>.</li>
+    <li>The timer counts <strong>up</strong>. Every X minutes studied earns Y minutes of rest.</li>
+    <li>You may study continuously. Rest keeps accumulating.</li>
+    <li>Switch to <strong>Rest</strong> mode to use your rest bank.</li>
+    <li>In <strong>Strict Mode</strong>, stopping study early earns nothing.</li>
+</ol>
+<p style="color:var(--muted);font-style:italic">
+  This timer rewards consistency, not shortcuts.
+</p>
+</section>
+
+<section class="card shortcuts">
+  <h3>Keyboard Shortcuts</h3>
+  <ul>
+    <li><kbd>S</kbd> — Switch to Study mode</li>
+    <li><kbd>R</kbd> — Switch to Rest mode</li>
+    <li><kbd>B</kbd> — Reset timer</li>
+    <li><kbd>Space</kbd> — Start / Stop timer</li>
+  </ul>
+</section>
+
+<section id="terms" class="card">
+<h3>Terms of Use</h3>
+<p style="color:var(--muted)">
+This application is provided on an “as is” basis, without warranties of any kind. The creator makes no guarantees regarding productivity, focus, or results obtained through use of this tool. By using this site, you agree that the creator shall not be held liable for any loss, missed deadlines, or consequences arising from its use.
+</p>
+</section>
+
+<section id="privacy" class="card">
+<h3>Privacy Policy</h3>
+<p style="color:var(--muted)">
+This site does not collect, store, or transmit personal data. All settings and timer data are stored locally in your browser using localStorage. No cookies, analytics, trackers, or third-party scripts are used.
+</p>
+</section>
+
+<footer>
+  <br>Built for focus. No accounts. No tracking.<br><br>
+  If it helps you, a small tip goes a long way.<br><br>
+  <div class="donations">
+  <a href="https://www.buymeacoffee.com/dionsrm" target="_blank" style="display:inline-block;">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height:40px">
+</a>
+</div>
+<br>
+<p style="font-size:11px">© 2026 Strict Pomodoro. All rights reserved.</p>  
+<p style="font-size:11px">v1.0</p>
+</footer>
+
+</div>
+
+<script>
+let timer=null,running=false;
 let studySeconds=0,restSeconds=0,earnedCycles=0;
 
 const timeEl=document.getElementById('time');
@@ -81,4 +313,8 @@ document.addEventListener('keydown', e => {
   if (e.key.toLowerCase() === 'r') mode.value = 'rest';
 
   update();
-});</script>
+});
+</script>
+
+</body>
+</html>
