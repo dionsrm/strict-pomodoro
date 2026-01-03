@@ -46,7 +46,9 @@
 
 If you find **Strict Pomodoro** useful, consider supporting development:
 
-[![Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/dionsrm)
+<a href="https://www.buymeacoffee.com/dionsrm" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="40">
+</a>
 
 Every donation helps keep this project free and ad-free.
 
